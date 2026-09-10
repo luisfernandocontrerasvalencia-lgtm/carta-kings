@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KINGS Drink &amp; Food - Menú</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dorado: #D4AF37;
+    --fondo: #0D0D0D;
+    --tarjeta: #1A1A1A;
+    --texto: #E0E0E0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--fondo);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 0.35s ease;
+    color: var(--texto);
+    font-family: 'Roboto', 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== PANTALLAS (INICIO / FEED) ===== */
+  .pantalla {
+    display: none;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .pantalla.activa {
+    display: flex;
+  }
+
+  #pantallaInicio.activa {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ===== PANTALLA INICIO: MARCO ORNAMENTADO ===== */
+  .marco-ornamentado {
+    position: relative;
+    margin: 14px;
+    padding: 22px 16px 26px;
+    border: 2px solid var(--dorado);
+    border-radius: 18px;
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,0.25), 0 0 30px rgba(212,175,55,0.08);
+  }
+
+  .marco-ornamentado::before,
+  .marco-ornamentado::after {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border: 2px solid var(--dorado);
+    opacity: 0.85;
+  }
+
+  .marco-ornamentado::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 14px;
+  }
+
+  .marco-ornamentado::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 14px;
+  }
+
+  .inicio-header {
+    position: relative;
+    text-align: center;
+    padding: 4px 6px 20px;
+  }
+
+  .btn-volver-secciones {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* ===== PANTALLA DE SECCIONES (Comidas / Bebidas / Licores) ===== */
+  .secciones-header {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 24px 16px 10px;
+  }
+
+  .secciones-header .logo {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--dorado);
+    box-shadow: 0 0 20px rgba(212,175,55,0.35);
+  }
+
+  .secciones-header h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: var(--dorado);
+    text-shadow: 0 2px 10px rgba(212,175,55,0.25);
+    margin-top: 12px;
+  }
+
+  .secciones-header p {
+    font-family: 'Roboto', sans-serif;
+    color: #bbb;
+    font-size: 0.85rem;
+  }
+
+  .carrusel-secciones {
+    flex: 1 1 auto;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carrusel-secciones::-webkit-scrollbar { display: none; }
+
+  .seccion-card {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: radial-gradient(circle at 50% 40%, #1a1a1a, #050505);
+    overflow: hidden;
+  }
+
+  .seccion-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 30px;
+  }
+
+  .seccion-card-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .seccion-card-fallback .icono {
+    font-size: 4rem;
+  }
+
+  .seccion-card-fallback .nombre {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: var(--dorado);
+    text-shadow: 0 2px 14px rgba(212,175,55,0.4);
+  }
+
+  .seccion-card-label {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.78rem;
+    color: #999;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .puntos-secciones {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 0 4px;
+  }
+
+  .punto-seccion {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(212,175,55,0.3);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .punto-seccion.activo {
+    background: var(--dorado);
+    transform: scale(1.3);
+  }
+
+  .secciones-footer {
+    flex: 0 0 auto;
+    text-align: center;
+    color: #888;
+    font-size: 0.82rem;
+    padding: 4px 16px 20px;
+  }
+
+  .inicio-header .logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--dorado);
+    box-shadow: 0 0 20px rgba(212,175,55,0.35);
+  }
+
+  .inicio-header h1 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--dorado);
+    text-shadow: 0 2px 10px rgba(212,175,55,0.25);
+    margin-top: 14px;
+  }
+
+  .inicio-divisor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 200px;
+    margin: 10px auto 12px;
+    color: var(--dorado);
+    opacity: 0.6;
+    font-size: 0.8rem;
+  }
+
+  .inicio-divisor::before,
+  .inicio-divisor::after {
+    content: '';
+    flex: 1 1 auto;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .inicio-header p {
+    font-family: 'Roboto', sans-serif;
+    color: #bbb;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* ===== GRILLA DE CATEGORÍAS ===== */
+  .grid-categorias {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cat-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(212,175,55,0.4);
+    background: linear-gradient(135deg, #1a1a1a, #262626);
+    cursor: pointer;
+  }
+
+  .cat-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .cat-card.sin-imagen {
+    aspect-ratio: 3 / 1;
+  }
+
+  .cat-card-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .cat-card-fallback-icono {
+    font-size: 2.2rem;
+  }
+
+  .cat-card-fallback-nombre {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .inicio-footer {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 20px;
+  }
+
+  /* ===== BARRA SUPERIOR DEL FEED (flota sobre la imagen) ===== */
+  .feed-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+  }
+
+  .btn-volver {
+    flex: 0 0 auto;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--dorado);
+    background: var(--tarjeta);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 20px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+
+  .feed-topbar-titulo {
+    flex: 1 1 auto;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: var(--dorado);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== FEED TIPO TIKTOK ===== */
+  .feed {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    position: relative;
+  }
+
+  .feed::-webkit-scrollbar { display: none; }
+
+  .feed-slide {
+    position: relative;
+    height: 100%;
+    min-height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .feed-media {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a, #262626);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feed-media img,
+  .feed-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .feed-media .sin-media {
+    font-family: 'Cinzel', serif;
+    color: rgba(212,175,55,0.35);
+    font-size: 5rem;
+  }
+
+  .feed-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(13,13,13,0) 35%, rgba(13,13,13,0.85) 82%, rgba(13,13,13,0.95) 100%);
+  }
+
+  .feed-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px calc(env(safe-area-inset-bottom, 0px) + 26px);
+  }
+
+  .feed-nombre {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  .feed-precio {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--dorado);
+    margin-bottom: 10px;
+  }
+
+  .feed-desc {
+    font-family: 'Roboto', 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #eee;
+    line-height: 1.55;
+  }
+
+  .feed-vacio {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #777;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    padding: 40px;
+  }
+
+  .feed-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: env(safe-area-inset-bottom, 0px);
+    z-index: 3;
+    text-align: center;
+    padding-bottom: 6px;
+    font-size: 1.4rem;
+    color: rgba(212,175,55,0.7);
+    opacity: 0.85;
+    animation: feedHintFloat 1.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes feedHintFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.85; }
+    50% { transform: translateY(-6px); opacity: 0.35; }
+  }
+
+  /* ===== RESPONSIVE MÓVIL ===== */
+  @media (max-width: 768px) {
+    body {
+      background-size: 100% auto;
+      background-position: top center;
+      background-repeat: no-repeat;
+    }
+
+    .inicio-header .logo {
+      width: 80px;
+      height: 80px;
+    }
+
+    .inicio-header h1 {
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .grid-categorias {
+      gap: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="pantalla activa" id="pantallaSecciones">
+    <div class="secciones-header">
+      <img class="logo" src="assets/images/logo.jpg" alt="Logo KINGS Drink & Food" onerror="this.style.display='none'">
+      <h1>KINGS Drink &amp; Food</h1>
+      <div class="inicio-divisor">◆</div>
+      <p>Desliza y elige qué quieres explorar.</p>
+    </div>
+    <div class="carrusel-secciones" id="carruselSecciones"></div>
+    <div class="puntos-secciones" id="puntosSecciones"></div>
+    <div class="secciones-footer">👉 Desliza para ver las 3 opciones · toca para entrar</div>
+  </div>
+
+  <div class="pantalla" id="pantallaInicio">
+    <div class="marco-ornamentado">
+      <div class="inicio-header">
+        <button type="button" class="btn-volver btn-volver-secciones" id="btnVolverSecciones">‹ Secciones</button>
+        <h1 id="tituloSeccionActiva">Categorías</h1>
+        <div class="inicio-divisor">◆</div>
+        <p id="subtituloSeccionActiva">Selecciona una categoría para explorar<br>nuestra carta de KINGS Drink &amp; Food.</p>
+      </div>
+      <div class="grid-categorias" id="gridCategorias"></div>
+      <div class="inicio-footer">👆 Toca la categoría de tu preferencia</div>
+    </div>
+  </div>
+
+  <div class="pantalla" id="pantallaFeed">
+    <div class="feed-topbar">
+      <button type="button" class="btn-volver" id="btnVolver">‹ Categorías</button>
+      <div class="feed-topbar-titulo" id="categoriaTitulo"></div>
+    </div>
+    <div class="feed" id="feedProductos"></div>
+  </div>
+
+<script>
+  /* =========================================================
+     DATOS DEL MENÚ — edita aquí para agregar/quitar categorías
+     y productos. Cada producto admite:
+       nombre, precio (número), descripcion, media (URL de
+       imagen o GIF; deja '' si no tienes imagen todavía)
+     ========================================================= */
+  const SECCIONES = [
+    { id: 'comidas', nombre: 'Comidas', icono: '🍽️', imagen: 'assets/images/seccion-comidas.webp' },
+    { id: 'bebidas', nombre: 'Bebidas', icono: '🥤', imagen: 'assets/images/seccion-bebidas.webp' },
+    { id: 'licores', nombre: 'Licores', icono: '🥃', imagen: 'assets/images/seccion-licores.webp' }
+  ];
+
+  const CATEGORIAS = [
+    {
+      id: 'cafes', nombre: 'Cafés', icono: '☕', seccion: 'bebidas',
+      fondo: 'assets/images/cafe-bg.webp'
+    },
+    {
+      id: 'entradas', nombre: 'Entradas', icono: '🥟', seccion: 'comidas',
+      fondo: 'assets/images/entradas-bg.webp'
+    },
+    {
+      id: 'alitas', nombre: 'Alitas y Costillitas', icono: '🍗', seccion: 'comidas',
+      fondo: 'assets/images/alitas-bg.webp'
+    },
+    {
+      id: 'hamburguesas', nombre: 'Hamburguesas', icono: '🍔', seccion: 'comidas',
+      fondo: 'assets/images/hamburguesas-bg.webp'
+    },
+    {
+      id: 'parrilla', nombre: 'Parrilla', icono: '🥩', seccion: 'comidas',
+      fondo: 'assets/images/parrilla-bg.webp'
+    },
+    {
+      id: 'cocteleria', nombre: 'Coctelería', icono: '🍸', seccion: 'bebidas',
+      fondo: 'assets/images/cocteleria-bg.webp'
+    },
+    {
+      id: 'cervezas', nombre: 'Cervezas', icono: '🍺', seccion: 'bebidas',
+      fondo: 'assets/images/cervezas-bg.webp'
+    },
+    {
+      id: 'cervezaArtesanal', nombre: 'Cerveza Artesanal', icono: '🍻', seccion: 'bebidas',
+      fondo: 'assets/images/cervezaArtesanal-bg.webp'
+    },
+    {
+      id: 'bebidasEnergizantes', nombre: 'Bebidas y Energizantes', icono: '🥤', seccion: 'bebidas',
+      fondo: 'assets/images/bebidasEnergizantes-bg.webp'
+    },
+    {
+      id: 'micheladas', nombre: 'Micheladas', icono: '🌶️', seccion: 'bebidas',
+      fondo: 'assets/images/micheladas-bg.webp'
+    },
+    {
+      id: 'aguardiente', nombre: 'Aguardiente', icono: '🥃', seccion: 'licores',
+      fondo: 'assets/images/aguardiente-bg.webp'
+    },
+    {
+      id: 'ron', nombre: 'Ron', icono: '🍾', seccion: 'licores',
+      fondo: 'assets/images/ron-bg.webp'
+    },
+    {
+      id: 'whisky', nombre: 'Whisky', icono: '🥃', seccion: 'licores',
+      fondo: 'assets/images/whisky-bg.webp'
+    },
+    {
+      id: 'tequila', nombre: 'Tequila', icono: '🍋', seccion: 'licores',
+      fondo: 'assets/images/tequila-bg.webp'
+    },
+    {
+      id: 'vodka', nombre: 'Vodka', icono: '❄️', seccion: 'licores',
+      fondo: 'assets/images/vodka-bg.webp'
+    },
+    {
+      id: 'aperitivos', nombre: 'Aperitivos', icono: '🍶', seccion: 'bebidas',
+      fondo: 'assets/images/aperitivos-bg.webp'
+    }
+  ];
+
+  const PRODUCTOS = {
+    cafes: [
+      {
+        nombre: 'Café Americano',
+        precio: 6000,
+        descripcion: 'Café de origen colombiano, preparado en filtro. Suave y aromático.',
+        media: 'assets/videos/cafe-americano.mp4'
+      },
+      {
+        nombre: 'Capuchino',
+        precio: 8500,
+        descripcion: 'Espresso doble con leche vaporizada y espuma cremosa, toque de canela.',
+        media: 'assets/videos/capuchino.mp4'
+      }
+    ],
+    entradas: [
+      {
+        nombre: 'Patacones con Hogao',
+        precio: 15000,
+        descripcion: 'Plátano verde frito acompañado de hogao casero y suero costeño.',
+        media: ''
+      },
+      {
+        nombre: 'Nachos KINGS',
+        precio: 22000,
+        descripcion: 'Nachos bañados en queso fundido, pico de gallo, guacamole y jalapeños.',
+        media: 'assets/videos/nachos.mp4'
+      }
+    ],
+    alitas: [
+      {
+        nombre: 'Alitas BBQ (8 uds)',
+        precio: 28000,
+        descripcion: 'Alitas de pollo horneadas y fritas, bañadas en salsa BBQ de la casa.',
+        media: ''
+      },
+      {
+        nombre: 'Costillitas de Cerdo',
+        precio: 34000,
+        descripcion: 'Costillitas glaseadas en salsa dulce-picante, acompañadas de papas criollas.',
+        media: ''
+      }
+    ],
+    hamburguesas: [
+      {
+        nombre: 'Hamburguesa Clásica KINGS',
+        precio: 26000,
+        descripcion: 'Carne de res 150g, queso cheddar, lechuga, tomate, cebolla caramelizada y salsa especial.',
+        media: ''
+      },
+      {
+        nombre: 'Hamburguesa BBQ Bacon',
+        precio: 30000,
+        descripcion: 'Doble carne, tocineta crocante, queso cheddar y salsa BBQ ahumada.',
+        media: ''
+      }
+    ],
+    parrilla: [
+      {
+        nombre: 'Churrasco Kings',
+        precio: 45000,
+        descripcion: 'Punta de anca a la parrilla, chimichurri de la casa, papa asada y ensalada.',
+        media: ''
+      }
+    ],
+    cocteleria: [
+      {
+        nombre: 'Frappé de la Casa',
+        precio: 20000,
+        descripcion: 'Nuestro frappé insignia: mezcla helada de café, licor de café y crema batida con toque de canela.',
+        media: 'assets/videos/frappe.mp4'
+      },
+      {
+        nombre: 'Mojito Clásico',
+        precio: 24000,
+        descripcion: 'Ron blanco, hierbabuena fresca, limón, azúcar y soda.',
+        media: ''
+      },
+      {
+        nombre: 'Margarita KINGS',
+        precio: 26000,
+        descripcion: 'Tequila, triple sec, jugo de limón fresco, escarchado con sal y chile.',
+        media: ''
+      }
+    ],
+    cervezas: [
+      {
+        nombre: 'Cerveza Nacional',
+        precio: 9000,
+        descripcion: 'Botella 330ml, bien fría. Pregunta por las opciones disponibles: Águila, Poker, Club Colombia.',
+        media: ''
+      },
+      {
+        nombre: 'Cerveza Importada',
+        precio: 13000,
+        descripcion: 'Corona, Stella Artois. Botella 330ml, bien fría.',
+        media: ''
+      }
+    ],
+    cervezaArtesanal: [
+      {
+        nombre: 'Cerveza Artesanal',
+        precio: 14000,
+        descripcion: 'Selección de cervezas artesanales locales, rotación semanal.',
+        media: ''
+      }
+    ],
+    bebidasEnergizantes: [
+      {
+        nombre: 'Gaseosa',
+        precio: 5000,
+        descripcion: 'Coca-Cola, Sprite o Colombiana. Botella personal.',
+        media: ''
+      },
+      {
+        nombre: 'Energizante',
+        precio: 12000,
+        descripcion: 'Bebida energizante bien fría, ideal para acompañar tus mezclas.',
+        media: ''
+      },
+      {
+        nombre: 'Agua con o sin Gas',
+        precio: 4000,
+        descripcion: 'Botella de agua, con o sin gas.',
+        media: ''
+      }
+    ],
+    micheladas: [
+      {
+        nombre: 'Michelada Clásica',
+        precio: 16000,
+        descripcion: 'Cerveza fría con limón, sal y salsas de la casa, escarchada al gusto.',
+        media: ''
+      },
+      {
+        nombre: 'Michelada Picante',
+        precio: 18000,
+        descripcion: 'Nuestra clásica con un toque extra de picante y tamarindo.',
+        media: ''
+      }
+    ],
+    aguardiente: [
+      {
+        nombre: 'Aguardiente Antioqueño (1/4)',
+        precio: 45000,
+        descripcion: 'Botella cuarto, incluye limón y sal.',
+        media: ''
+      },
+      {
+        nombre: 'Aguardiente Antioqueño (1/2)',
+        precio: 80000,
+        descripcion: 'Botella media, incluye limón y sal.',
+        media: ''
+      }
+    ],
+    ron: [
+      {
+        nombre: 'Ron Medellín Añejo (1/4)',
+        precio: 60000,
+        descripcion: 'Botella cuarto, incluye hielo y gaseosas para acompañar.',
+        media: ''
+      },
+      {
+        nombre: 'Ron Viejo de Caldas (1/4)',
+        precio: 55000,
+        descripcion: 'Botella cuarto, incluye hielo y gaseosas para acompañar.',
+        media: ''
+      }
+    ],
+    whisky: [
+      {
+        nombre: 'Whisky Etiqueta Negra (1/4)',
+        precio: 95000,
+        descripcion: 'Botella cuarto, incluye hielo y gaseosas para acompañar.',
+        media: ''
+      },
+      {
+        nombre: 'Whisky Etiqueta Roja (1/4)',
+        precio: 75000,
+        descripcion: 'Botella cuarto, incluye hielo y gaseosas para acompañar.',
+        media: ''
+      }
+    ],
+    tequila: [
+      {
+        nombre: 'Tequila José Cuervo (1/4)',
+        precio: 90000,
+        descripcion: 'Botella cuarto, incluye limón y sal.',
+        media: ''
+      }
+    ],
+    vodka: [
+      {
+        nombre: 'Vodka Absolut (1/4)',
+        precio: 85000,
+        descripcion: 'Botella cuarto, incluye hielo y jugos para acompañar.',
+        media: ''
+      }
+    ],
+    aperitivos: [
+      {
+        nombre: 'Sangría de la Casa',
+        precio: 20000,
+        descripcion: 'Jarra de sangría preparada con vino tinto, frutas frescas y un toque de licor.',
+        media: ''
+      },
+      {
+        nombre: 'Copa de Vino',
+        precio: 15000,
+        descripcion: 'Copa de vino tinto o blanco de la casa.',
+        media: ''
+      }
+    ]
+  };
+
+  let categoriaActivaId = CATEGORIAS[0].id;
+
+  function formatearPrecio(n) {
+    const valor = Number(n) || 0;
+    return '$' + valor.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function crearSlideProducto(producto, esPrimero) {
+    const slide = document.createElement('div');
+    slide.className = 'feed-slide';
+
+    const media = document.createElement('div');
+    media.className = 'feed-media';
+    if (producto.media && /\.mp4($|\?)/i.test(producto.media)) {
+      const video = document.createElement('video');
+      video.src = producto.media;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('aria-label', producto.nombre);
+      media.appendChild(video);
+    } else if (producto.media) {
+      const img = document.createElement('img');
+      img.src = producto.media;
+      img.alt = producto.nombre;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.referrerPolicy = 'no-referrer';
+      media.appendChild(img);
+    } else {
+      const sinMedia = document.createElement('div');
+      sinMedia.className = 'sin-media';
+      sinMedia.textContent = '👑';
+      media.appendChild(sinMedia);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'feed-overlay';
+
+    const contenido = document.createElement('div');
+    contenido.className = 'feed-content';
+
+    const nombre = document.createElement('div');
+    nombre.className = 'feed-nombre';
+    nombre.textContent = producto.nombre;
+
+    const precio = document.createElement('div');
+    precio.className = 'feed-precio';
+    precio.textContent = formatearPrecio(producto.precio);
+
+    const desc = document.createElement('div');
+    desc.className = 'feed-desc';
+    desc.textContent = producto.descripcion || '';
+
+    contenido.appendChild(nombre);
+    contenido.appendChild(precio);
+    contenido.appendChild(desc);
+
+    slide.appendChild(media);
+    slide.appendChild(overlay);
+    slide.appendChild(contenido);
+
+    if (esPrimero) {
+      const hint = document.createElement('div');
+      hint.className = 'feed-hint';
+      hint.textContent = '▲ Deslizar';
+      slide.appendChild(hint);
+    }
+
+    return slide;
+  }
+
+  function aplicarFondoCategoria(categoria) {
+    if (categoria.fondo) {
+      document.body.style.backgroundImage =
+        'linear-gradient(rgba(13,13,13,0.35), rgba(13,13,13,0.6)), url("' + categoria.fondo + '")';
+    } else {
+      document.body.style.backgroundImage = '';
+    }
+  }
+
+  function renderCategoria(idCategoria) {
+    const categoria = CATEGORIAS.find(c => c.id === idCategoria) || CATEGORIAS[0];
+    categoriaActivaId = categoria.id;
+    document.getElementById('categoriaTitulo').textContent = categoria.icono + ' ' + categoria.nombre;
+    aplicarFondoCategoria(categoria);
+
+    const feed = document.getElementById('feedProductos');
+    feed.innerHTML = '';
+    feed.scrollTop = 0;
+
+    const productos = PRODUCTOS[categoria.id] || [];
+    if (productos.length === 0) {
+      const slideVacio = document.createElement('div');
+      slideVacio.className = 'feed-slide';
+      const vacio = document.createElement('div');
+      vacio.className = 'feed-vacio';
+      vacio.textContent = 'Próximamente productos en esta categoría.';
+      slideVacio.appendChild(vacio);
+      feed.appendChild(slideVacio);
+      return;
+    }
+
+    productos.forEach((p, i) => feed.appendChild(crearSlideProducto(p, i === 0 && productos.length > 1)));
+  }
+
+  function irACategoriaAdyacente(direccion) {
+    const categoriasSeccion = CATEGORIAS.filter(c => c.seccion === seccionActivaId);
+    const idx = categoriasSeccion.findIndex(c => c.id === categoriaActivaId);
+    const nuevoIdx = Math.min(Math.max(idx + direccion, 0), categoriasSeccion.length - 1);
+    if (nuevoIdx !== idx) renderCategoria(categoriasSeccion[nuevoIdx].id);
+  }
+
+  function inicializarSwipe() {
+    const feed = document.getElementById('feedProductos');
+    const UMBRAL_MIN_PX = 45;
+    let inicioX = 0;
+    let inicioY = 0;
+
+    feed.addEventListener('touchstart', (e) => {
+      inicioX = e.touches[0].clientX;
+      inicioY = e.touches[0].clientY;
+    }, { passive: true });
+
+    feed.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - inicioX;
+      const dy = e.changedTouches[0].clientY - inicioY;
+      // Solo si el gesto es claramente horizontal (evita interferir con el swipe vertical entre productos)
+      if (Math.abs(dx) < UMBRAL_MIN_PX || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+      irACategoriaAdyacente(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  }
+
+  let seccionActivaId = null;
+
+  function mostrarPantalla(nombre) {
+    document.getElementById('pantallaSecciones').classList.toggle('activa', nombre === 'secciones');
+    document.getElementById('pantallaInicio').classList.toggle('activa', nombre === 'inicio');
+    document.getElementById('pantallaFeed').classList.toggle('activa', nombre === 'feed');
+    if (nombre === 'inicio' || nombre === 'secciones') {
+      document.body.style.backgroundImage = '';
+    }
+  }
+
+  function abrirCategoria(idCategoria) {
+    renderCategoria(idCategoria);
+    mostrarPantalla('feed');
+  }
+
+  function abrirSeccion(idSeccion) {
+    seccionActivaId = idSeccion;
+    const seccion = SECCIONES.find(s => s.id === idSeccion);
+    document.getElementById('tituloSeccionActiva').textContent = seccion.icono + ' ' + seccion.nombre;
+    document.getElementById('subtituloSeccionActiva').innerHTML =
+      'Selecciona una categoría de <strong>' + seccion.nombre + '</strong> para explorar<br>nuestra carta de KINGS Drink &amp; Food.';
+    inicializarGridCategorias();
+    mostrarPantalla('inicio');
+  }
+
+  function crearTarjetaSeccion(seccion, indice) {
+    const card = document.createElement('div');
+    card.className = 'seccion-card';
+
+    const img = document.createElement('img');
+    img.src = seccion.imagen;
+    img.alt = seccion.nombre;
+    img.loading = indice === 0 ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    img.onerror = function () {
+      img.remove();
+      const fallback = document.createElement('div');
+      fallback.className = 'seccion-card-fallback';
+      const icono = document.createElement('div');
+      icono.className = 'icono';
+      icono.textContent = seccion.icono;
+      const nombre = document.createElement('div');
+      nombre.className = 'nombre';
+      nombre.textContent = 'KINGS ' + seccion.nombre.toUpperCase();
+      fallback.appendChild(icono);
+      fallback.appendChild(nombre);
+      card.insertBefore(fallback, card.firstChild);
+    };
+    card.appendChild(img);
+
+    card.addEventListener('click', () => abrirSeccion(seccion.id));
+
+    return card;
+  }
+
+  function inicializarCarruselSecciones() {
+    const carrusel = document.getElementById('carruselSecciones');
+    const puntos = document.getElementById('puntosSecciones');
+
+    SECCIONES.forEach((seccion, indice) => {
+      carrusel.appendChild(crearTarjetaSeccion(seccion, indice));
+
+      const punto = document.createElement('div');
+      punto.className = 'punto-seccion' + (indice === 0 ? ' activo' : '');
+      puntos.appendChild(punto);
+    });
+
+    carrusel.addEventListener('scroll', () => {
+      const indice = Math.round(carrusel.scrollLeft / carrusel.clientWidth);
+      document.querySelectorAll('.punto-seccion').forEach((p, i) => {
+        p.classList.toggle('activo', i === indice);
+      });
+    }, { passive: true });
+  }
+
+  function crearTarjetaCategoria(cat) {
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+
+    if (cat.fondo) {
+      const img = document.createElement('img');
+      img.src = cat.fondo;
+      img.alt = cat.nombre;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.referrerPolicy = 'no-referrer';
+      card.appendChild(img);
+    } else {
+      // Sin foto propia todavía: se muestra ícono + nombre como respaldo
+      card.classList.add('sin-imagen');
+      const fallback = document.createElement('div');
+      fallback.className = 'cat-card-fallback';
+
+      const icono = document.createElement('div');
+      icono.className = 'cat-card-fallback-icono';
+      icono.textContent = cat.icono;
+
+      const nombre = document.createElement('div');
+      nombre.className = 'cat-card-fallback-nombre';
+      nombre.textContent = cat.nombre;
+
+      fallback.appendChild(icono);
+      fallback.appendChild(nombre);
+      card.appendChild(fallback);
+    }
+
+    card.addEventListener('click', () => abrirCategoria(cat.id));
+
+    return card;
+  }
+
+  function inicializarGridCategorias() {
+    const grid = document.getElementById('gridCategorias');
+    grid.innerHTML = '';
+    CATEGORIAS
+      .filter(cat => cat.seccion === seccionActivaId)
+      .forEach(cat => grid.appendChild(crearTarjetaCategoria(cat)));
+  }
+
+  document.getElementById('btnVolver').addEventListener('click', () => mostrarPantalla('inicio'));
+  document.getElementById('btnVolverSecciones').addEventListener('click', () => mostrarPantalla('secciones'));
+
+  inicializarCarruselSecciones();
+  inicializarSwipe();
+  mostrarPantalla('secciones');
+</script>
+</body>
+</html>

@@ -99,6 +99,34 @@
     left: 0;
   }
 
+  .btn-inicio-flotante {
+    position: fixed;
+    left: 50%;
+    bottom: max(20px, env(safe-area-inset-bottom, 0px));
+    z-index: 10;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border: 2px solid var(--dorado);
+    border-radius: 999px;
+    background: rgba(13, 13, 13, 0.94);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.55), 0 0 18px rgba(212,175,55,0.18);
+    color: var(--dorado);
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .btn-inicio-flotante:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+
   /* ===== PANTALLA DE SECCIONES (Comidas / Bebidas / Licores) ===== */
   .secciones-header {
     flex: 0 0 auto;
@@ -561,6 +589,7 @@
       <div class="grid-categorias" id="gridCategorias"></div>
       <div class="inicio-footer">👆 Toca la categoría de tu preferencia</div>
     </div>
+    <button type="button" class="btn-inicio-flotante" id="btnInicioSecciones" aria-label="Volver a las secciones principales">🏠 INICIO</button>
   </div>
 
   <div class="pantalla" id="pantallaFeed">
@@ -1159,6 +1188,7 @@
 
   document.getElementById('btnVolver').addEventListener('click', () => mostrarPantalla('inicio'));
   document.getElementById('btnVolverSecciones').addEventListener('click', () => mostrarPantalla('secciones'));
+  document.getElementById('btnInicioSecciones').addEventListener('click', () => mostrarPantalla('secciones'));
 
   inicializarCarruselSecciones();
   inicializarSwipe();

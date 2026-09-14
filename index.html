@@ -47,18 +47,22 @@
   }
 
   #pantallaInicio.activa {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
   }
 
   /* ===== PANTALLA INICIO: MARCO ORNAMENTADO ===== */
   .marco-ornamentado {
     position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
     margin: 14px;
+    margin-bottom: 0;
     padding: 22px 16px 26px;
     border: 2px solid var(--dorado);
     border-radius: 18px;
     box-shadow: inset 0 0 0 1px rgba(212,175,55,0.25), 0 0 30px rgba(212,175,55,0.08);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .marco-ornamentado::before,
@@ -100,11 +104,6 @@
   }
 
   .btn-inicio-flotante {
-    position: fixed;
-    left: 50%;
-    bottom: max(20px, env(safe-area-inset-bottom, 0px));
-    z-index: 10;
-    transform: translateX(-50%);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -120,6 +119,16 @@
     font-weight: 700;
     letter-spacing: 1px;
     cursor: pointer;
+  }
+
+  .barra-inicio {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    padding: 10px 16px max(10px, env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(212,175,55,0.35);
+    background: rgba(8, 8, 8, 0.98);
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.3);
   }
 
   .btn-inicio-flotante:focus-visible {
@@ -589,7 +598,9 @@
       <div class="grid-categorias" id="gridCategorias"></div>
       <div class="inicio-footer">👆 Toca la categoría de tu preferencia</div>
     </div>
-    <button type="button" class="btn-inicio-flotante" id="btnInicioSecciones" aria-label="Volver a las secciones principales">🏠 INICIO</button>
+    <div class="barra-inicio">
+      <button type="button" class="btn-inicio-flotante" id="btnInicioSecciones" aria-label="Volver a las secciones principales">🏠 INICIO</button>
+    </div>
   </div>
 
   <div class="pantalla" id="pantallaFeed">

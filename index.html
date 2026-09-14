@@ -103,7 +103,7 @@
   .secciones-header {
     flex: 0 0 auto;
     text-align: center;
-    padding: 24px 16px 10px;
+    padding: 18px 16px 8px;
   }
 
   .secciones-header .logo {
@@ -123,6 +123,7 @@
     color: var(--dorado);
     text-shadow: 0 2px 10px rgba(212,175,55,0.25);
     margin-top: 12px;
+    text-transform: uppercase;
   }
 
   .secciones-header p {
@@ -134,8 +135,12 @@
   .carrusel-secciones {
     flex: 1 1 auto;
     display: flex;
+    align-items: center;
+    gap: 16px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(16px, calc((100vw - min(78vw, 52vh, 620px)) / 2));
+    padding: 12px max(16px, calc((100vw - min(78vw, 52vh, 620px)) / 2));
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -143,7 +148,8 @@
   .carrusel-secciones::-webkit-scrollbar { display: none; }
 
   .seccion-card {
-    flex: 0 0 100%;
+    flex: 0 0 min(78vw, 52vh, 620px);
+    height: min(78vw, 52vh, 620px);
     scroll-snap-align: center;
     scroll-snap-stop: always;
     position: relative;
@@ -153,13 +159,29 @@
     cursor: pointer;
     background: radial-gradient(circle at 50% 40%, #1a1a1a, #050505);
     overflow: hidden;
+    border: 1px solid rgba(212,175,55,0.22);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    opacity: 0.48;
+    transform: scale(0.9);
+    transition: transform 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .seccion-card.activa {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 14px 34px rgba(212,175,55,0.18);
   }
 
   .seccion-card img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    padding: 30px;
+    object-fit: cover;
+  }
+
+  .seccion-card:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
   }
 
   .seccion-card-fallback {
@@ -199,7 +221,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    padding: 10px 0 4px;
+    padding: 8px 0 5px;
   }
 
   .punto-seccion {
@@ -218,9 +240,9 @@
   .secciones-footer {
     flex: 0 0 auto;
     text-align: center;
-    color: #888;
-    font-size: 0.82rem;
-    padding: 4px 16px 20px;
+    color: #aaa;
+    font-size: 0.94rem;
+    padding: 4px 16px 12px;
   }
 
   .inicio-header .logo {
@@ -494,6 +516,16 @@
 
     .inicio-header h1 {
       font-size: 1.6rem;
+    }
+
+    .secciones-header .logo {
+      width: 78px;
+      height: 78px;
+    }
+
+    .secciones-header h1 {
+      font-size: 1.35rem;
+      margin-top: 9px;
     }
   }
 
@@ -996,7 +1028,10 @@
 
   function crearTarjetaSeccion(seccion, indice) {
     const card = document.createElement('div');
-    card.className = 'seccion-card';
+    card.className = 'seccion-card' + (indice === 0 ? ' activa' : '');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', 'Abrir sección ' + seccion.nombre);
 
     const img = document.createElement('img');
     img.src = seccion.imagen;
@@ -1021,6 +1056,12 @@
     card.appendChild(img);
 
     card.addEventListener('click', () => abrirSeccion(seccion.id));
+    card.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        abrirSeccion(seccion.id);
+      }
+    });
 
     return card;
   }
@@ -1037,12 +1078,39 @@
       puntos.appendChild(punto);
     });
 
+    function actualizarSeleccionCarrusel() {
+      const tarjetas = Array.from(carrusel.querySelectorAll('.seccion-card'));
+      const centroCarrusel = carrusel.scrollLeft + carrusel.clientWidth / 2;
+      let indiceActivo = 0;
+      let distanciaMinima = Infinity;
+
+      tarjetas.forEach((tarjeta, indice) => {
+        const centroTarjeta = tarjeta.offsetLeft + tarjeta.offsetWidth / 2;
+        const distancia = Math.abs(centroTarjeta - centroCarrusel);
+        if (distancia < distanciaMinima) {
+          distanciaMinima = distancia;
+          indiceActivo = indice;
+        }
+      });
+
+      tarjetas.forEach((tarjeta, indice) => tarjeta.classList.toggle('activa', indice === indiceActivo));
+      puntos.querySelectorAll('.punto-seccion').forEach((punto, indice) => {
+        punto.classList.toggle('activo', indice === indiceActivo);
+      });
+    }
+
+    let animacionPendiente = false;
     carrusel.addEventListener('scroll', () => {
-      const indice = Math.round(carrusel.scrollLeft / carrusel.clientWidth);
-      document.querySelectorAll('.punto-seccion').forEach((p, i) => {
-        p.classList.toggle('activo', i === indice);
+      if (animacionPendiente) return;
+      animacionPendiente = true;
+      requestAnimationFrame(() => {
+        actualizarSeleccionCarrusel();
+        animacionPendiente = false;
       });
     }, { passive: true });
+
+    window.addEventListener('resize', actualizarSeleccionCarrusel);
+    actualizarSeleccionCarrusel();
   }
 
   function crearTarjetaCategoria(cat) {

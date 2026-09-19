@@ -505,6 +505,163 @@
     line-height: 1.55;
   }
 
+  .btn-calificar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+    padding: 10px 15px;
+    border: 1px solid rgba(212,175,55,0.72);
+    border-radius: 999px;
+    background: rgba(8,8,8,0.76);
+    color: #f2d56b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  .btn-calificar:focus-visible,
+  .rating-star:focus-visible,
+  .rating-zero:focus-visible,
+  .btn-enviar-opinion:focus-visible,
+  .btn-cerrar-opinion:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .modal-opinion {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 18px 14px max(18px, env(safe-area-inset-bottom, 0px));
+    background: rgba(0,0,0,0.72);
+  }
+
+  .modal-opinion.abierto { display: flex; }
+
+  .opinion-panel {
+    width: min(100%, 540px);
+    max-height: calc(100vh - 36px);
+    overflow-y: auto;
+    padding: 22px;
+    border: 1px solid rgba(212,175,55,0.72);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #202020, #101010);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6), 0 0 25px rgba(212,175,55,0.14);
+  }
+
+  .opinion-encabezado {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .opinion-encabezado h2 {
+    color: var(--dorado);
+    font: 700 1.15rem 'Cinzel', serif;
+  }
+
+  .opinion-producto {
+    margin-top: 5px;
+    color: #eee;
+    font-size: 0.92rem;
+  }
+
+  .btn-cerrar-opinion {
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(255,255,255,0.26);
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .opinion-label {
+    display: block;
+    margin: 14px 0 9px;
+    color: #ddd;
+    font-size: 0.92rem;
+  }
+
+  .rating-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .rating-star,
+  .rating-zero {
+    border: 0;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+  }
+
+  .rating-star {
+    padding: 3px;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .rating-zero {
+    margin-right: 6px;
+    padding: 7px 9px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    color: #ddd;
+    font-size: 0.76rem;
+  }
+
+  .rating-star.seleccionada { color: #f4c542; text-shadow: 0 0 10px rgba(244,197,66,0.45); }
+  .rating-zero.seleccionada { border-color: var(--dorado); color: var(--dorado); }
+
+  .rating-ayuda {
+    min-height: 20px;
+    margin-top: 6px;
+    color: #aaa;
+    font-size: 0.8rem;
+  }
+
+  .opinion-texto {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid rgba(212,175,55,0.38);
+    border-radius: 10px;
+    resize: vertical;
+    background: rgba(0,0,0,0.38);
+    color: #fff;
+    font: 0.94rem 'Roboto', sans-serif;
+  }
+
+  .opinion-texto:focus { outline: none; border-color: var(--dorado); box-shadow: 0 0 0 3px rgba(212,175,55,0.13); }
+
+  .btn-enviar-opinion {
+    width: 100%;
+    margin-top: 16px;
+    padding: 13px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e6c256, #a87813);
+    color: #121212;
+    font: 700 0.9rem 'Montserrat', sans-serif;
+    cursor: pointer;
+  }
+
+  .btn-enviar-opinion:disabled { opacity: 0.6; cursor: wait; }
+  .opinion-estado { min-height: 20px; margin-top: 10px; color: #9ddd9d; text-align: center; font-size: 0.84rem; }
+
   .feed-vacio {
     position: absolute;
     inset: 0;
@@ -609,6 +766,32 @@
       <div class="feed-topbar-titulo" id="categoriaTitulo"></div>
     </div>
     <div class="feed" id="feedProductos"></div>
+  </div>
+
+  <div class="modal-opinion" id="modalOpinion" role="dialog" aria-modal="true" aria-labelledby="opinionTitulo">
+    <form class="opinion-panel" id="formOpinion">
+      <div class="opinion-encabezado">
+        <div>
+          <h2 id="opinionTitulo">Tu opinión nos importa</h2>
+          <p class="opinion-producto" id="opinionProducto"></p>
+        </div>
+        <button class="btn-cerrar-opinion" id="btnCerrarOpinion" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <label class="opinion-label">¿Cómo calificarías este producto?</label>
+      <div class="rating-control" id="ratingControl" role="radiogroup" aria-label="Calificación de 0 a 5 estrellas">
+        <button type="button" class="rating-zero" data-rating="0" role="radio" aria-checked="false">0 estrellas</button>
+        <button type="button" class="rating-star" data-rating="1" role="radio" aria-label="1 estrella" aria-checked="false">★</button>
+        <button type="button" class="rating-star" data-rating="2" role="radio" aria-label="2 estrellas" aria-checked="false">★</button>
+        <button type="button" class="rating-star" data-rating="3" role="radio" aria-label="3 estrellas" aria-checked="false">★</button>
+        <button type="button" class="rating-star" data-rating="4" role="radio" aria-label="4 estrellas" aria-checked="false">★</button>
+        <button type="button" class="rating-star" data-rating="5" role="radio" aria-label="5 estrellas" aria-checked="false">★</button>
+      </div>
+      <p class="rating-ayuda" id="ratingAyuda">Selecciona de 0 a 5 estrellas.</p>
+      <label class="opinion-label" for="opinionTexto">Cuéntanos qué te pareció <span aria-hidden="true">(opcional)</span></label>
+      <textarea class="opinion-texto" id="opinionTexto" maxlength="1500" placeholder="Escribe tu opinión sobre el producto..."></textarea>
+      <button class="btn-enviar-opinion" id="btnEnviarOpinion" type="submit">Enviar calificación</button>
+      <p class="opinion-estado" id="opinionEstado" role="status"></p>
+    </form>
   </div>
 
 <script>
@@ -906,6 +1089,10 @@
     ]
   };
 
+  // Servicio de registro: guarda las opiniones en la pestaña
+  // BD_Calificaciones_Carta del archivo donde vive Carta_Kings.
+  const URL_CALIFICACIONES = 'https://script.google.com/macros/s/AKfycbwYO1G_Nx0hQybIbB6OguzZ6p7LSg5cJaegw5xSDZ941sBJxk_GG8bjHqbJalg5lNxvLQ/exec';
+
   let categoriaActivaId = CATEGORIAS[0].id;
 
   function formatearPrecio(n) {
@@ -964,6 +1151,13 @@
     contenido.appendChild(nombre);
     contenido.appendChild(precio);
     contenido.appendChild(desc);
+
+    const calificar = document.createElement('button');
+    calificar.type = 'button';
+    calificar.className = 'btn-calificar';
+    calificar.innerHTML = '<span aria-hidden="true">☆</span> Calificar este producto';
+    calificar.addEventListener('click', () => abrirOpinion(producto, categoriaActivaId));
+    contenido.appendChild(calificar);
 
     slide.appendChild(media);
     slide.appendChild(overlay);
@@ -1196,6 +1390,102 @@
       .filter(cat => cat.seccion === seccionActivaId)
       .forEach(cat => grid.appendChild(crearTarjetaCategoria(cat)));
   }
+
+  let productoCalificando = null;
+  let categoriaCalificando = '';
+  let calificacionSeleccionada = null;
+
+  function textoCalificacion(valor) {
+    if (valor === 0) return '0 estrellas — no cumplió tus expectativas';
+    return valor + (valor === 1 ? ' estrella' : ' estrellas');
+  }
+
+  function actualizarEstrellas() {
+    document.querySelectorAll('[data-rating]').forEach((boton) => {
+      const valor = Number(boton.dataset.rating);
+      const seleccionada = calificacionSeleccionada !== null && (valor === 0
+        ? calificacionSeleccionada === 0
+        : valor <= calificacionSeleccionada && calificacionSeleccionada > 0);
+      boton.classList.toggle('seleccionada', seleccionada);
+      boton.setAttribute('aria-checked', String(valor === calificacionSeleccionada));
+    });
+    document.getElementById('ratingAyuda').textContent = calificacionSeleccionada === null
+      ? 'Selecciona de 0 a 5 estrellas.'
+      : textoCalificacion(calificacionSeleccionada);
+  }
+
+  function abrirOpinion(producto, idCategoria) {
+    productoCalificando = producto;
+    categoriaCalificando = (CATEGORIAS.find(c => c.id === idCategoria) || {}).nombre || '';
+    calificacionSeleccionada = null;
+    document.getElementById('opinionProducto').textContent = producto.nombre;
+    document.getElementById('opinionTexto').value = '';
+    document.getElementById('opinionEstado').textContent = '';
+    document.getElementById('btnEnviarOpinion').disabled = false;
+    document.getElementById('btnEnviarOpinion').textContent = 'Enviar calificación';
+    actualizarEstrellas();
+    document.getElementById('modalOpinion').classList.add('abierto');
+  }
+
+  function cerrarOpinion() {
+    document.getElementById('modalOpinion').classList.remove('abierto');
+    productoCalificando = null;
+  }
+
+  document.querySelectorAll('[data-rating]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      calificacionSeleccionada = Number(boton.dataset.rating);
+      actualizarEstrellas();
+    });
+  });
+
+  document.getElementById('btnCerrarOpinion').addEventListener('click', cerrarOpinion);
+  document.getElementById('modalOpinion').addEventListener('click', (event) => {
+    if (event.target === event.currentTarget) cerrarOpinion();
+  });
+
+  document.getElementById('formOpinion').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const estado = document.getElementById('opinionEstado');
+    const boton = document.getElementById('btnEnviarOpinion');
+    if (!productoCalificando || calificacionSeleccionada === null) {
+      estado.textContent = 'Por favor selecciona una calificación de 0 a 5 estrellas.';
+      estado.style.color = '#ffb2b2';
+      return;
+    }
+
+    boton.disabled = true;
+    boton.textContent = 'Enviando…';
+    estado.textContent = '';
+    const datos = {
+      accion: 'guardarCalificacionCarta',
+      producto: productoCalificando.nombre,
+      categoria: categoriaCalificando,
+      precio: productoCalificando.precio || '',
+      estrellas: calificacionSeleccionada,
+      opinion: document.getElementById('opinionTexto').value.trim()
+    };
+
+    try {
+      // Apps Script recibe el registro aunque la respuesta sea opaca por ser
+      // un sitio público alojado en GitHub Pages (CORS).
+      await fetch(URL_CALIFICACIONES, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body: JSON.stringify(datos)
+      });
+      estado.textContent = '¡Gracias! Tu opinión fue enviada.';
+      estado.style.color = '#9ddd9d';
+      boton.textContent = 'Calificación enviada ✓';
+      setTimeout(cerrarOpinion, 1500);
+    } catch (error) {
+      estado.textContent = 'No pudimos enviar tu opinión. Revisa tu conexión e inténtalo de nuevo.';
+      estado.style.color = '#ffb2b2';
+      boton.disabled = false;
+      boton.textContent = 'Reintentar envío';
+    }
+  });
 
   document.getElementById('btnVolver').addEventListener('click', () => mostrarPantalla('inicio'));
   document.getElementById('btnVolverSecciones').addEventListener('click', () => mostrarPantalla('secciones'));

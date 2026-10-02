@@ -505,6 +505,20 @@
     line-height: 1.55;
   }
 
+  .feed-rating {
+    margin-top: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f2d56b;
+    min-height: 1.2em;
+  }
+
+  .feed-rating .conteo {
+    color: #ccc;
+    font-weight: 400;
+  }
+
   .btn-calificar {
     display: inline-flex;
     align-items: center;
@@ -1090,8 +1104,57 @@
   };
 
   // Servicio de registro: guarda las opiniones en la pestaña
-  // BD_Calificaciones_Carta del archivo donde vive Carta_Kings.
+  // calificacion_productos del archivo donde vive Carta_Kings.
   const URL_CALIFICACIONES = 'https://script.google.com/macros/s/AKfycbzXCE3Mf1Lzm89RBxgjJDtC4M9Q12jZrhp9lYFn1D3wO4BWJ9egRDqutoe-PGG1niE0jQ/exec';
+
+  let resumenCalificaciones = null;
+
+  function pintarContador(el) {
+    if (!resumenCalificaciones) return;
+    const datos = Object.prototype.hasOwnProperty.call(resumenCalificaciones, el.dataset.producto)
+      ? resumenCalificaciones[el.dataset.producto]
+      : null;
+    el.textContent = '';
+    if (!datos || !datos.total) {
+      el.textContent = 'Sé el primero en calificar';
+      return;
+    }
+    el.append('★ ' + datos.promedio.toLocaleString('es-CO', { maximumFractionDigits: 1 }) + ' ');
+    const conteo = document.createElement('span');
+    conteo.className = 'conteo';
+    conteo.textContent = '· ' + datos.total + (datos.total === 1 ? ' calificación' : ' calificaciones');
+    el.appendChild(conteo);
+  }
+
+  function pintarContadores() {
+    document.querySelectorAll('.feed-rating').forEach(pintarContador);
+  }
+
+  async function cargarResumenCalificaciones() {
+    try {
+      const respuesta = await fetch(URL_CALIFICACIONES + '?accion=resumenCalificacionesCarta');
+      const datos = await respuesta.json();
+      if (datos && datos.success) {
+        resumenCalificaciones = datos.productos || {};
+        pintarContadores();
+      }
+    } catch (error) {
+      // Sin resumen la carta sigue funcionando; solo no se muestra el contador.
+    }
+  }
+
+  function sumarCalificacionLocal(producto, estrellas) {
+    if (!resumenCalificaciones) return;
+    const actual = Object.prototype.hasOwnProperty.call(resumenCalificaciones, producto)
+      ? resumenCalificaciones[producto]
+      : { total: 0, promedio: 0 };
+    const total = actual.total + 1;
+    resumenCalificaciones[producto] = {
+      total: total,
+      promedio: Math.round(((actual.promedio * actual.total + estrellas) / total) * 10) / 10
+    };
+    pintarContadores();
+  }
 
   let categoriaActivaId = CATEGORIAS[0].id;
 
@@ -1148,8 +1211,14 @@
     desc.className = 'feed-desc';
     desc.textContent = producto.descripcion || '';
 
+    const rating = document.createElement('div');
+    rating.className = 'feed-rating';
+    rating.dataset.producto = producto.nombre;
+    pintarContador(rating);
+
     contenido.appendChild(nombre);
     contenido.appendChild(precio);
+    contenido.appendChild(rating);
     contenido.appendChild(desc);
 
     const calificar = document.createElement('button');
@@ -1475,6 +1544,7 @@
         headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         body: JSON.stringify(datos)
       });
+      sumarCalificacionLocal(datos.producto, datos.estrellas);
       estado.textContent = '¡Gracias! Tu opinión fue enviada.';
       estado.style.color = '#9ddd9d';
       boton.textContent = 'Calificación enviada ✓';
@@ -1494,6 +1564,7 @@
   inicializarCarruselSecciones();
   inicializarSwipe();
   mostrarPantalla('secciones');
+  cargarResumenCalificaciones();
 </script>
 </body>
 </html>
